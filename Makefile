@@ -1,3 +1,5 @@
+find . -type f | xargs grep -l 'cloud-run-exec-python' | xargs sed -i '' -e 's/cloud-run-exec-python/conserve_exec/g'
+
 PROJECT_ID=$(shell gcloud config get-value core/project)
 all:
 	@echo "build  - Build the docker image"
