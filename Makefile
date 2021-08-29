@@ -1,4 +1,3 @@
-find . -type f | xargs grep -l 'cloud-run-exec-python' | xargs sed -i '' -e 's/cloud-run-exec-python/conserve_exec/g'
 
 PROJECT_ID=$(shell gcloud config get-value core/project)
 all:
@@ -8,26 +7,26 @@ all:
 	@echo "call   - Call the Cloud Run service"
 
 deploy:
-	gcloud run deploy cloud-run-exec-python \
-		--image gcr.io/$(PROJECT_ID)/cloud-run-exec-python \
+	gcloud run deploy conserve_exec \
+		--image gcr.io/$(PROJECT_ID)/conserve_exec \
 		--max-instances 1 \
 		--platform managed \
 		--region us-central1 \
 		--no-allow-unauthenticated
 
 build:
-	gcloud builds submit --tag gcr.io/$(PROJECT_ID)/cloud-run-exec-python
+	gcloud builds submit --tag gcr.io/$(PROJECT_ID)/conserve_exec
 
 clean:
-	-gcloud container images delete gcr.io/$(PROJECT_ID)/cloud-run-exec-python --quiet
-	-gcloud run services delete cloud-run-exec-python \
+	-gcloud container images delete gcr.io/$(PROJECT_ID)/conserve_exec --quiet
+	-gcloud run services delete conserve_exec \
 		--platform managed \
 		--region us-central1 \
 		--quiet
 
 call:
 	@echo "Calling Python Cloud Run service"
-	@url=$(shell gcloud run services describe cloud-run-exec-python --format='value(status.url)' --region us-central1 --platform managed); \
+	@url=$(shell gcloud run services describe conserve_exec --format='value(status.url)' --region us-central1 --platform managed); \
 	token=$(shell gcloud auth print-identity-token); \
 	curl --request POST \
   		--header "Authorization: Bearer $$token" \
